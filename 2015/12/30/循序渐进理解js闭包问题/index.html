@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>循序渐进理解js闭包问题 | 小豆的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="闭包">
+  
+
+  <meta name="description" content="闭包?需要了解闭包，首先要了解一个经典错误，也是笔试面试中常考案例！12345678910111213141516// html部分&amp;lt;ul&amp;gt;    &amp;lt;li&amp;gt;1&amp;lt;/li&amp;gt;    &amp;lt;li&amp;gt;2&amp;lt;/li&amp;gt;    &amp;lt;li&amp;gt;3&amp;lt;/li&amp;gt;    &amp;lt;li&amp;gt;4&amp;lt;/li&amp;gt;    &amp;lt;li&amp;gt;5&amp;lt;/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="循序渐进理解js闭包问题">
+<meta property="og:url" content="http://yoursite.com/2015/12/30/循序渐进理解js闭包问题/index.html">
+<meta property="og:site_name" content="小豆的个人博客">
+<meta property="og:description" content="闭包?需要了解闭包，首先要了解一个经典错误，也是笔试面试中常考案例！12345678910111213141516// html部分&amp;lt;ul&amp;gt;    &amp;lt;li&amp;gt;1&amp;lt;/li&amp;gt;    &amp;lt;li&amp;gt;2&amp;lt;/li&amp;gt;    &amp;lt;li&amp;gt;3&amp;lt;/li&amp;gt;    &amp;lt;li&amp;gt;4&amp;lt;/li&amp;gt;    &amp;lt;li&amp;gt;5&amp;lt;/">
+<meta property="og:image" content="http://yoursite.com/2015/12/30/循序渐进理解js闭包问题/js.png">
+<meta property="og:updated_time" content="2016-01-09T15:18:17.500Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="循序渐进理解js闭包问题">
+<meta name="twitter:description" content="闭包?需要了解闭包，首先要了解一个经典错误，也是笔试面试中常考案例！12345678910111213141516// html部分&amp;lt;ul&amp;gt;    &amp;lt;li&amp;gt;1&amp;lt;/li&amp;gt;    &amp;lt;li&amp;gt;2&amp;lt;/li&amp;gt;    &amp;lt;li&amp;gt;3&amp;lt;/li&amp;gt;    &amp;lt;li&amp;gt;4&amp;lt;/li&amp;gt;    &amp;lt;li&amp;gt;5&amp;lt;/">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  
+  
+    <link rel="stylesheet" href="/scrollLoading/style.css" type="text/css">
+  
+  
+
+
+  
+
+  
+    <link href='//fonts.useso.com/css?family=Titillium+Web:300,400,600' rel='stylesheet' type='text/css'>
+    <link href="//fonts.useso.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css" type="text/css">
+</head>
+
+<body>
+  <div id="wrap">
+    <header id="header">
+  <div id="header-outer" class="outer">
+    <div class="container">
+      <div class="container-inner">
+        <div id="header-title">
+          <h1 class="logo-wrap">
+            <a href="/" class="logo"></a>
+          </h1>
+          
+            <h2 class="subtitle-wrap">
+              <p class="subtitle">既然决定要过不一样的生活！</p>
+            </h2>
+          
+        </div>
+        <div id="header-inner" class="nav-container">
+          <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+          <div class="nav-container-inner">
+            <ul id="main-nav">
+              
+                <li class="main-nav-list-item" ><a class="main-nav-list-link" href="/">主页</a></li>
+              
+                    <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/技术/">技术</a><ul class="main-nav-list-child"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/技术/Git/">Git</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/技术/javascript/">javascript</a></li></ul></li></ul>
+                  
+                <li class="main-nav-list-item" ><a class="main-nav-list-link" href="/photo/index.html">相册</a></li>
+              
+                <li class="main-nav-list-item" ><a class="main-nav-list-link" href="/about/index.html">关于</a></li>
+              
+            </ul>
+            <nav id="sub-nav">
+              <div id="search-form-wrap">
+                
+                  <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="搜索"><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+                
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="container">
+      <div class="main-body container-inner">
+        <div class="main-body-inner">
+          <section id="main">
+            <div class="main-body-header">
+
+              <h1 class="header"><a class="page-title-link" href="/categories/技术/">技术</a><i class="icon fa fa-angle-right"></i><a class="page-title-link" href="/categories/技术/javascript/">javascript</a></h1>
+            </div>
+            <div class="main-body-content">
+              
+  <article id="post-循序渐进理解js闭包问题" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+      <!--  -->
+      
+        <header class="article-header">
+          
+  
+    <h1 class="article-title" itemprop="name">
+      循序渐进理解js闭包问题
+    </h1>
+  
+
+        </header>
+      
+      <p class="article-byline">
+        <a href="/2015/12/30/循序渐进理解js闭包问题/" class="article-date">
+  <time datetime="2015-12-30T14:39:06.000Z" itemprop="datePublished">2015-12-30</time>
+</a>
+      </p>
+      <div class="article-entry" itemprop="articleBody">
+        <p><img src="/2015/12/30/循序渐进理解js闭包问题/js.png" alt=""></p>
+<h2 id="u95ED_u5305_3F"><a href="#u95ED_u5305_3F" class="headerlink" title="闭包?"></a>闭包?</h2><p>需要了解闭包，首先要了解一个经典错误，也是笔试面试中常考案例！<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// html部分</span></span><br><span class="line">&lt;ul&gt;</span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="title">li</span>&gt;</span>1<span class="tag">&lt;/<span class="title">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">li</span>&gt;</span>2<span class="tag">&lt;/<span class="title">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">li</span>&gt;</span>3<span class="tag">&lt;/<span class="title">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">li</span>&gt;</span>4<span class="tag">&lt;/<span class="title">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">li</span>&gt;</span>5<span class="tag">&lt;/<span class="title">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">li</span>&gt;</span>6<span class="tag">&lt;/<span class="title">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">ul</span>&gt;</span></span><br><span class="line">// js部分</span><br><span class="line">var oLi=document.getElementsByTagName("li");</span><br><span class="line">for(var i=0;i<span class="tag">&lt;<span class="title">oLi.length;i++)&#123;</span></span><br><span class="line">    <span class="attribute">oLi</span>[<span class="attribute">i</span>]<span class="attribute">.onclick</span>=<span class="value">function()&#123;</span></span><br><span class="line">        <span class="attribute">alert</span>(<span class="attribute">i</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span></span></span><br></pre></td></tr></table></figure></p>
+<p>在未了解闭包之前，很多人都觉得点击相应的item（包括我）,会弹出不同的i，但是这个理解是错误的！<br>正确答案是不管点哪个li项每次都只会弹出6；</p>
+<h3 id="u7136_u800C_2C_u4ED6_u6BCF_u6B21_u5EA6_u53EA_u4F1A_u5F39_u51FA6_uFF0C_u4E3A_u4EC0_u4E48_u5462_uFF1F"><a href="#u7136_u800C_2C_u4ED6_u6BCF_u6B21_u5EA6_u53EA_u4F1A_u5F39_u51FA6_uFF0C_u4E3A_u4EC0_u4E48_u5462_uFF1F" class="headerlink" title="然而,他每次度只会弹出6，为什么呢？"></a>然而,他每次度只会弹出6，为什么呢？</h3><p>恩，先留个悬念！相信学会闭包，这个问题将迎刃而解！</p>
+<h2 id="1_u3001_u51FD_u6570_u4F5C_u7528_u57DF"><a href="#1_u3001_u51FD_u6570_u4F5C_u7528_u57DF" class="headerlink" title="1、函数作用域"></a>1、函数作用域</h2><pre><code>a. js编程环境的顶级作用域是window对象下的范围，称为全局作用域，全局作用域中的变量称为全局变量。
+b js函数内的变量无法在函数外面访问，在函数内却可以访问函数外的变量，函数内的变量称为局部变量。
+c. 在js里没有类似c等大多数语言的块级作用域。
+</code></pre><h6 id="u4E0B_u9762_u6765_u770Bjs_u4E2D_u7684_u4E00_u4E2A_u7279_u6B8A_u4E4B_u5904_3A"><a href="#u4E0B_u9762_u6765_u770Bjs_u4E2D_u7684_u4E00_u4E2A_u7279_u6B8A_u4E4B_u5904_3A" class="headerlink" title="下面来看js中的一个特殊之处:"></a>下面来看js中的一个特殊之处:</h6><pre><code>JavaScript解析机制是什么？
+JavaScript解析过程分为两个阶段，一个是编译阶段，另外一个就是执行阶段。              　
+  * 编译阶段:  就是我们常说的JavaScript预解析（预处理）阶段，在这个阶段JavaScript解释器将完成把JavaScript脚本代码转换到字节码。
+  * 执行阶段:  在编译阶段JavaScript解释器借助执行环境把字节码生成机械码，并顺序执行。
+</code></pre><p>js解析器将当前作用域内声明的所有变量和函数都会放到作用域的开始处</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="literal">false</span>)&#123;</span><br><span class="line">        <span class="keyword">var</span> a=<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">console</span>.log(a);<span class="comment">// undefined</span></span><br><span class="line">    <span class="built_in">console</span>.log(b);<span class="comment">// 报错 ReferenceError: b is not defined</span></span><br><span class="line">&#125;</span><br><span class="line">fn();</span><br></pre></td></tr></table></figure>
+<p>执行结果 a:undefined；b:报错</p>
+<p>原因：js预解析机制已将a在函数执行之前将a变量提前声明成undefined,但是if语句的原因，没有执行到a的赋值语句！</p>
+<h2 id="2_u3001_u5185_u90E8_u51FD_u6570"><a href="#2_u3001_u5185_u90E8_u51FD_u6570" class="headerlink" title="2、内部函数"></a>2、内部函数</h2><p>函数内部同样可以定义函数，其作用域关系和变量一样</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">outerFn</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> outerVar=<span class="number">1</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">innerFn</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(outerVar);<span class="comment">// 1</span></span><br><span class="line">        <span class="keyword">var</span> innerVar=<span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    innerFn();</span><br><span class="line">    <span class="built_in">console</span>.log(innerVar); <span class="comment">// ReferenceError: innerVar is not defined</span></span><br><span class="line">&#125;</span><br><span class="line">outerFn();</span><br></pre></td></tr></table></figure>
+<p>执行结果 outerVar:1 ；innerVar:报错</p>
+<p>原因：函数里面定义的可以访问函数外面定义的，但是函数外面不能访问函数里面定义的</p>
+<h2 id="3_u3001_u4F1F_u5927_u7684_u9003_u8131"><a href="#3_u3001_u4F1F_u5927_u7684_u9003_u8131" class="headerlink" title="3、伟大的逃脱"></a>3、伟大的逃脱</h2><p>怎样让外部访问内部？</p>
+<h3 id="3-1__u5168_u5C40_u53D8_u91CF"><a href="#3-1__u5168_u5C40_u53D8_u91CF" class="headerlink" title="3.1 全局变量"></a>3.1 全局变量</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> innerHandler=<span class="literal">null</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">outerFn</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> outerVar=<span class="number">1</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">innerFn</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(outerVar);<span class="comment">// 1</span></span><br><span class="line">        innerVar=<span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    innerHandler=innerFn;</span><br><span class="line">&#125;</span><br><span class="line">outerFn();</span><br><span class="line">innerHandler();</span><br></pre></td></tr></table></figure>
+<p>执行结果 outerVar:1 </p>
+<p>原因：通过定义全局变量的方式，在函数outerFn的外面成功执行了 innerFn,这就是逃脱的第一种方式。</p>
+<h3 id="3-2__u8FD4_u56DE_u503C"><a href="#3-2__u8FD4_u56DE_u503C" class="headerlink" title="3.2 返回值"></a>3.2 返回值</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">outerFn</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">     <span class="keyword">var</span> outerVar=<span class="number">1</span>;</span><br><span class="line">     <span class="function"><span class="keyword">function</span> <span class="title">innerFn</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">         <span class="built_in">console</span>.log(outerVar);<span class="comment">// 1</span></span><br><span class="line">         <span class="keyword">var</span> innerVar=<span class="number">2</span>;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">return</span> innerFn;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">var</span> handler=outerFn();</span><br><span class="line"> handler();</span><br></pre></td></tr></table></figure>
+<p>执行结果 outerVar:1 ；</p>
+<p>原因：通过返回值的方式，在函数outerFn的外面成功执行了innerFn,这就是逃脱的第二种方式。</p>
+<h2 id="4_u3001_u5185_u90E8_u51FD_u6570_u4F5C_u7528_u57DF"><a href="#4_u3001_u5185_u90E8_u51FD_u6570_u4F5C_u7528_u57DF" class="headerlink" title="4、内部函数作用域"></a>4、内部函数作用域</h2><pre><code>只要存在调用内部函数的可能，javascript就需要保留被引用的函数；而且javascript运行时需要跟踪引用这个内部函数的所有变量，直到最后一个变量废弃，javascript的垃圾收集器才能释放相应的内存空间
+</code></pre><h3 id="u95ED_u5305__uFF1A_u662F_u6307_u6709_u6743_u9650_u8BBF_u95EE_u53E6_u4E00_u4E2A_u51FD_u6570_u4F5C_u7528_u57DF_u53D8_u91CF_u7684_u51FD_u6570_u3002"><a href="#u95ED_u5305__uFF1A_u662F_u6307_u6709_u6743_u9650_u8BBF_u95EE_u53E6_u4E00_u4E2A_u51FD_u6570_u4F5C_u7528_u57DF_u53D8_u91CF_u7684_u51FD_u6570_u3002" class="headerlink" title="闭包 ：是指有权限访问另一个函数作用域变量的函数。"></a>闭包 ：是指有权限访问另一个函数作用域变量的函数。</h3><p>在javascript中闭包的最简单的闭包形成方式就是函数嵌套函数，内部函数可以被外部访问到。</p>
+<h3 id="u5173_u952E_uFF1A__u95ED_u5305_u4E3A_u4EC0_u4E48_u4F1A_u5F15_u8D77_u5185_u5B58_u6CC4_u9732"><a href="#u5173_u952E_uFF1A__u95ED_u5305_u4E3A_u4EC0_u4E48_u4F1A_u5F15_u8D77_u5185_u5B58_u6CC4_u9732" class="headerlink" title="关键： 闭包为什么会引起内存泄露"></a>关键： 闭包为什么会引起内存泄露</h3><p>还是下面这个例子：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">   function outerFn()&#123;&#10;        var outerVar=1;&#10;        function innerFn()&#123;&#10;            console.log(outerVar);// 1&#10;            var innerVar=2;&#10;        &#125;&#10;        return innerFn;&#10;    &#125;&#10;    var handler=outerFn();&#10;    handler();&#10;    &#10;&#22312;&#26222;&#36890;&#20989;&#25968;&#25191;&#34892;&#23436;&#20043;&#21518;&#65292;&#37117;&#20250;&#37322;&#25918;&#20869;&#23384;&#65292;&#20294;&#26159;&#38381;&#21253;&#21017;&#19981;&#20250;&#12290;&#10;&#10;&#21464;&#37327; outVar&#19981;&#33021;&#34987;&#37322;&#25918;&#10;&#10;&#21407;&#22240;&#65306;&#19978;&#36848;&#20363;&#23376;&#26174;&#28982;&#24418;&#25104;&#20102;&#19968;&#20010;&#38381;&#21253;&#65292;innerFn&#20989;&#25968;&#33021;&#34987;&#22806;&#37096;&#25152;&#35775;&#38382;&#21040;&#65292;&#23601;&#36896;&#25104;&#20102;&#26412;&#36523;&#20869;&#37096;&#20989;&#25968;&#23481;&#22120;&#20013;&#30340;&#25152;&#26377;&#21464;&#37327;&#34987;&#36843;&#20445;&#23384;&#19979;&#26469;&#12290;&#10;&#10;## 5&#12289;&#22238;&#22836;&#30475;&#38382;&#39064;&#10;&#10;```javascript&#10;    // html&#37096;&#20998;&#10;    &#60;ul&#62;&#10;        &#60;li&#62;1&#60;/li&#62;&#10;        &#60;li&#62;2&#60;/li&#62;&#10;        &#60;li&#62;3&#60;/li&#62;&#10;        &#60;li&#62;4&#60;/li&#62;&#10;        &#60;li&#62;5&#60;/li&#62;&#10;        &#60;li&#62;6&#60;/li&#62;&#10;    &#60;/ul&#62;&#10;    // js&#37096;&#20998;&#10;    var oLi=document.getElementsByTagName(&#34;li&#34;);&#10;    for(var i=0;i&#60;oLi.length;i++)&#123;&#10;        oLi[i].onclick=function()&#123;&#10;            alert(i);&#10;        &#125;&#10;    &#125;</span><br></pre></td></tr></table></figure>
+<p>for循环给每个li绑定单击事件，只要存在被点击的可能性，i就永远都不会被释放。</p>
+<h3 id="u89E3_u51B3_u529E_u6CD5_uFF1A"><a href="#u89E3_u51B3_u529E_u6CD5_uFF1A" class="headerlink" title="解决办法："></a>解决办法：</h3><p>通过 立即执行函数 将i当做参数传递进来，不再依赖i 每次都会将参数n保存下来<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> oLi=<span class="built_in">document</span>.getElementsByTagName(<span class="string">"li"</span>);</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;oLi.length;i++)&#123;</span><br><span class="line">    (<span class="function"><span class="keyword">function</span>(<span class="params">n</span>)</span>&#123;</span><br><span class="line">        oLi[n].onclick=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        alert(n);</span><br><span class="line">    &#125;)(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>虽然使用闭包是很常见的，但是不小心使一个本来无用的变量多次重复防止在内存中，就会导致内存泄露，所以要谨慎使用闭包！</p>
+<h1 id="6_u3001_u547D_u540D_u7A7A_u95F4_uFF08_u95ED_u5305_u89E3_u51B3_u7684_u95EE_u9898_uFF09"><a href="#6_u3001_u547D_u540D_u7A7A_u95F4_uFF08_u95ED_u5305_u89E3_u51B3_u7684_u95EE_u9898_uFF09" class="headerlink" title="6、命名空间（闭包解决的问题）"></a>6、命名空间（闭包解决的问题）</h1><p>当在一个页面中通过同时引入两个js文件，但是文件中具有相同名字的变量，这样后面载入的js文件中的同名变量将会覆盖前面js文件中的变量。<br>所以如下面的例子，利用闭包来解决此问题：</p>
+<pre><code class="javascript"><span class="function"><span class="keyword">function</span> <span class="title">outerFn</span>(<span class="params"></span>)</span>{
+     outerVar=<span class="number">1</span>;
+     <span class="function"><span class="keyword">function</span> <span class="title">innerFn</span>(<span class="params"></span>)</span>{
+         <span class="built_in">console</span>.log(outerVar);<span class="comment">// 1</span>
+         <span class="keyword">var</span> innerVar=<span class="number">2</span>;
+     }
+     <span class="keyword">return</span> innerFn;
+ }
+ <span class="keyword">var</span> newFun=outerFn();
+ <span class="keyword">var</span> outerVar=<span class="number">100</span>;
+ newFun();
+</code></pre>
+<p>尽管在newFun执行之前定义了一个和他内部重名的变量，但是它并不能干涉到newFun访问自己内部的变量，这就是命名空间。</p>
+<h4 id="u8FD9_u4E5F_u662F_u95ED_u5305_u7684_u91CD_u8981_u7528_u5904"><a href="#u8FD9_u4E5F_u662F_u95ED_u5305_u7684_u91CD_u8981_u7528_u5904" class="headerlink" title="这也是闭包的重要用处"></a>这也是闭包的重要用处</h4><h1 id="u5C0F_u7ED3"><a href="#u5C0F_u7ED3" class="headerlink" title="小结"></a>小结</h1><pre><code>闭包的必要条件：
+    1、函数嵌套
+    2、内部函数还能被外部访问，暴露出了句柄，暴露出来的函数有被调用的可能性
+这样外部函数永远不能释放，这就是闭包。
+</code></pre><p>##问题反馈<br>如果您发现以上任何错误，欢迎反馈给我，可以用以下联系方式跟我交流</p>
+<ul>
+<li>邮件(douhn@foxmail.com)</li>
+<li>QQ: 903484243</li>
+<li>weibo: <a href="http://weibo.com/douhn" target="_blank" rel="external">@丿小豆灬</a></li>
+</ul>
+
+      </div>
+      <footer class="article-footer">
+        <a data-url="http://yoursite.com/2015/12/30/循序渐进理解js闭包问题/" data-id="cij78mre90003wwtxru5o8lgb" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+        
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/闭包/">闭包</a></li></ul>
+
+      </footer>
+    </div>
+  </article>
+  
+  
+
+            </div>
+          </section>
+          <aside id="sidebar">
+  <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+  <div class="sidebar-top">
+    <p>关注我 :</p>
+    <ul class="social-links">
+      
+        <li><a class="social-tooltip" title="twitter" href="/" target="_blank"><i class="icon fa fa-twitter"></i></a></li>
+      
+        <li><a class="social-tooltip" title="facebook" href="/" target="_blank"><i class="icon fa fa-facebook"></i></a></li>
+      
+        <li><a class="social-tooltip" title="google-plus" href="/" target="_blank"><i class="icon fa fa-google-plus"></i></a></li>
+      
+        <li><a class="social-tooltip" title="github" href="https://github.com/douhn" target="_blank"><i class="icon fa fa-github"></i></a></li>
+      
+        <li><a class="social-tooltip" title="weibo" href="http://weibo.com/douhn" target="_blank"><i class="icon fa fa-weibo"></i></a></li>
+      
+        <li><a class="social-tooltip" title="rss" href="/" target="_blank"><i class="icon fa fa-rss"></i></a></li>
+      
+    </ul>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/12/27/git命令详解/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <p class="article-nav-title">git命令详解</p>
+      <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+    </a>
+  
+</nav>
+
+  
+  <div class="widgets-container">
+    
+      
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul id="recent-post" class="">
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/2015/12/30/循序渐进理解js闭包问题/" class="thumbnail">
+  
+    <span style="background-image:url(/2015/12/30/循序渐进理解js闭包问题/js.png
+)" alt="循序渐进理解js闭包问题" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/技术/">技术</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/技术/javascript/">javascript</a></p>
+              <p class="item-title"><a href="/2015/12/30/循序渐进理解js闭包问题/" class="title">循序渐进理解js闭包问题</a></p>
+              <p class="item-date"><time datetime="2015-12-30T14:39:06.000Z" itemprop="datePublished">2015-12-30</time></p>
+            </div>
+          </li>
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/2015/12/27/git命令详解/" class="thumbnail">
+  
+    <span style="background-image:url(/2015/12/27/git命令详解/git.jpg
+)" alt="git命令详解" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/技术/">技术</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/技术/Git/">Git</a></p>
+              <p class="item-title"><a href="/2015/12/27/git命令详解/" class="title">git命令详解</a></p>
+              <p class="item-date"><time datetime="2015-12-27T12:05:28.000Z" itemprop="datePublished">2015-12-27</time></p>
+            </div>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget-wrap widget-list">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/技术/">技术</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/技术/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap widget-list">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap widget-list">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/命令/">命令</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/闭包/">闭包</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap widget-float">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/命令/" style="font-size: 10px;">命令</a> <a href="/tags/闭包/" style="font-size: 10px;">闭包</a>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap widget-list">
+    <h3 class="widget-title">链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://hexo.io">Hexo</a>
+          </li>
+        
+          <li>
+            <a href="http://www.lzjtu.edu.cn">兰州交通大学</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+    
+  </div>
+</aside>
+        </div>
+      </div>
+    </div>
+    <footer id="footer">
+  
+  <div class="container">
+    <div class="container-inner">
+      <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+      <div class="credit">
+        <h1 class="logo-wrap">
+          <a href="/" class="logo"></a>
+        </h1>
+        <p>&copy; 2016 Douhn</p>
+        <p>Powered by <a href="//hexo.io/" target="_blank">Hexo</a>. Theme by <a href="//github.com/ppoffice" target="_blank">PPOffice</a></p>
+      </div>
+    </div>
+  </div>
+</footer>
+    
+
+
+  <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+
+
+
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+
+  <script src="/scrollLoading/jquery.scrollLoading.js" type="text/javascript"></script>
+  <script src="/scrollLoading/main.js" type="text/javascript"></script>
+
+
+
+
+<script src="/js/html-patch.js" type="text/javascript"></script>
+<script src="/js/script.js" type="text/javascript"></script>
+
+  </div>
+</body>
+</html>
